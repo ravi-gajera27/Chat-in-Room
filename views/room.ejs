@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <h1>You are in room</h1>
+  </head>
+  <script src="socket.io/socket.io.js"></script>
+  <script type="text/javascript">
+    var socket = io("http://localhost:3000");
+    //var receive_msg = new Array();
+    var room = "<%= roomName %>";
+    console.log(room);
+    socket.emit("join", room);
+    var send_msg;
+    var n;
+    socket.on("receive_msg", (data) => {
+      var msg = document.getElementById("message");
+      var m = document.createElement("div");
+      console.log("receive_msg", data);
+      m.innerText = data;
+      msg.append(m);
+    });
+
+    function submit(roomName) {
+      send_msg = document.getElementById("msg").value;
+      document.getElementById("msg").value = "";
+      console.log("send msg:", send_msg);
+      socket.emit("new_message", roomName, send_msg);
+    }
+  </script>
+  <body>
+    <div class="container">
+      <div id="message"></div>
+      <input type="text" id="msg" placeholder="your message" />
+      <button onClick="submit('<%= roomName %>')">Send</button>
+    </div>
+  </body>
+</html>

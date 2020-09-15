@@ -1,0 +1,43 @@
+<html>
+  <head>
+    Home page
+  </head>
+  <script src="socket.io/socket.io.js"></script>
+  <script>
+    var socket = io("http://localhost:3000");
+    socket.on("room_created", (room) => {
+      var container = document.getElementById("room-container");
+      var r = document.createElement("div");
+      r.innerText = room;
+      var rLink = document.createElement("a");
+      rLink.href = `/${room}`;
+      rLink.innerText = "join";
+      container.append(r);
+      container.append(rLink);
+    });
+    function createRoom() {
+      var room = document.getElementById("room").value;
+      console.log(room + "from index");
+      document.getElementById("room").value = "";
+      socket.emit("create_room", room);
+      window.location.pathname = `/${room}`;
+    }
+  </script>
+  <body>
+    <div id="room-container">
+      <% Object.keys(rooms).forEach(room => { %>
+      <div><%= room %></div>
+      <a href="<%= room %>">Join</a>
+      <% }) %>
+    </div>
+    <div>
+      <input type="text" id="room" name="room" placeholder="create_room" />
+      <button onClick="createRoom()">Create Room</button>
+    </div>
+    <!-- <h5 id="receive_req"></h5>
+    <button onclick="send()">send</button>
+    <button onclick="receive()">receive</button> -->
+    <div id="file"></div>
+    <h3 id="receive_value"></h3>
+  </body>
+</html>
